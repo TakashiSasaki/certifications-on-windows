@@ -1,6 +1,6 @@
 #!/bin/make -f
 .ONESHELL=1
-.DEFAULT_GOAL=certs
+.DEFAULT_GOAL=import-certs
 
 YKMAN=/drives/c/Program\ Files/Yubico/YubiKey\ Manager/ykman.exe
 
@@ -17,16 +17,19 @@ scinfo-pin:
 scroot-view:
 	certutil -scroots view "Yubico Yubikey 4 OTP+U2F+CCID 0" | iconv -f sjis
 
-9a.cert:
+9a.cer:
 	$(YKMAN) piv export-certificate $(basename $@) $@
 
-9c.cert:
+9c.cer:
 	$(YKMAN) piv export-certificate $(basename $@) $@
 
-9d.cert:
+9d.cer:
 	$(YKMAN) piv export-certificate $(basename $@) $@
 
-9e.cert:
+9e.cer:
 	$(YKMAN) piv export-certificate $(basename $@) $@
 
-certs: 9a.cert 9c.cert 9d.cert 9e.cert
+certs: 9a.cer 9c.cer 9d.cer 9e.cer
+
+import-certs: 9a.cer
+	certutil -importcert 9a.cer | iconv -f sjis
