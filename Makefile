@@ -77,14 +77,3 @@ $(MACHINE_DIR)trustedpeople.txt:
 $(MACHINE_DIR)root.txt:
 	certutil.exe -store Root | iconv -f sjis | tee $@
 
-usage: $(USAGE_DIR) $(USAGE_DIR)certutil.txt $(USAGE_DIR)getkey.txt
-
-$(USAGE_DIR):
-	-@mkdir $@
-
-$(USAGE_DIR)certutil.txt:
-	certutil.exe -? | iconv -f sjis | tee $@
-
-$(USAGE_DIR)getkey.txt:
-	certutil.exe -getkey -? | iconv -f sjis | tee $@
-
