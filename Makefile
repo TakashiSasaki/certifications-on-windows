@@ -1,7 +1,10 @@
 #!/bin/make -f
 .ONESHELL=1
 .DEFAULT_GOAL=all
-
+SMARTCARD_DIR=smartcard/
+USER_DIR=user/
+MACHINE_DIR=machine/
+USAGE_DIR=usage/
 YKMAN=/drives/c/Program\ Files/Yubico/YubiKey\ Manager/ykman.exe
 
 all: smartcard user machine usage
@@ -19,69 +22,69 @@ scinfo-pin:
 scroot-view:
 	certutil -scroots view "Yubico Yubikey 4 OTP+U2F+CCID 0" | iconv -f sjis
 
-smartcard/:
+$(SMARTCARD_DIR):
 	-@mkdir $@
 
-smartcard: smartcard/ smartcard/9a.cer smartcard/9c.cer smartcard/9d.cer smartcard/9e.cer
+smartcard: $(SMARTCARD_DIR) $(SMARTCARD_DIR)9a.cer $(SMARTCARD_DIR)9c.cer $(SMARTCARD_DIR)9d.cer $(SMARTCARD_DIR)9e.cer
 
-smartcard/9a.cer:
+$(SMARTCARD_DIR)9a.cer:
 	$(YKMAN) piv export-certificate $(notdir $(basename $@)) $@
 
-smartcard/9c.cer:
+$(SMARTCARD_DIR)9c.cer:
 	$(YKMAN) piv export-certificate $(notdir $(basename $@)) $@
 
-smartcard/9d.cer:
+$(SMARTCARD_DIR)9d.cer:
 	$(YKMAN) piv export-certificate $(notdir $(basename $@)) $@
 
-smartcard/9e.cer:
+$(SMARTCARD_DIR)9e.cer:
 	$(YKMAN) piv export-certificate $(notdir $(basename $@)) $@
 
-view-9a: smartcard/9a.cer
+view-9a: $(SMARTCARD_DIR)9a.cer
 	certutil $< | iconv -f sjis
 
 
-user: user/ user/my.txt user/enumstore.txt user/trustedpeople.txt
+user: $(USER_DIR) $(USER_DIR)my.txt $(USER_DIR)enumstore.txt $(USER_DIR)trustedpeople.txt
 
-user/:
-	-@mkdir user
+$(USER_DIR):
+	-@mkdir $@
 
-user/enumstore.txt:
+$(USER_DIR)enumstore.txt:
 	certutil.exe -enumstore -user | iconv -f sjis | tee $@
 
-user/trustedpeople.txt:
+$(USER_DIR)trustedpeople.txt:
 	certutil.exe -user -store TrustedPeople | iconv -f sjis | tee $@
 
-user/my.txt:
+$(USER_DIR)my.txt:
 	certutil.exe -user -store My | iconv -f sjis | tee $@
 
-machine: machine/ machine/my.txt
+machine: $(MACHINE_DIR) $(MACHINE_DIR)my.txt
 
-machine/:
-	-@mkdir machine
+$(MACHINE_DIR):
+	-@mkdir $@
 
-machine/enumstore.txt:
+$(MACHINE_DIR)enumstore.txt:
 	certutil.exe -enumstore | iconv -f sjis | tee $@
 
-machine/my.txt:
+$(MACHINE_DIR)my.txt:
 	certutil.exe -store My | iconv -f sjis | tee $@
 
-machine/recovery.txt:
+$(MACHINE_DIR)recovery.txt:
 	certutil.exe -store Recovery | iconv -f sjis | tee $@
 
-machine/trustedpeople.txt:
+$(MACHINE_DIR)trustedpeople.txt:
 	certutil.exe -store TrustedPeople | iconv -f sjis | tee $@
 
-machine/root.txt:
+$(MACHINE_DIR)root.txt:
 	certutil.exe -store Root | iconv -f sjis | tee $@
 
-usage: usage/ usage/certutil.txt usage/getkey.txt
+usage: $(USAGE_DIR) $(USAGE_DIR)certutil.txt $(USAGE_DIR)getkey.txt
 
-usage/:
-	-@mkdir usage
+$(USAGE_DIR):
+	-@mkdir $@
 
-usage/certutil.txt:
+$(USAGE_DIR)certutil.txt:
 	certutil.exe -? | iconv -f sjis | tee $@
 
-usage/getkey.txt:
+$(USAGE_DIR)getkey.txt:
 	certutil.exe -getkey -? | iconv -f sjis | tee $@
 
