@@ -5,3 +5,7 @@ recovery.txt
 root.txt
 trust.txt
 trustedpeople.txt
+recovery.certhash
+root.certhash
+trust.certhash
+trustedpeople.certhash
