@@ -1,6 +1,6 @@
 #!/bin/make -f
 .ONESHELL=1
-.DEFAULT_GOAL=import-certs
+.DEFAULT_GOAL=view-9a
 
 YKMAN=/drives/c/Program\ Files/Yubico/YubiKey\ Manager/ykman.exe
 
@@ -29,7 +29,8 @@ scroot-view:
 9e.cer:
 	$(YKMAN) piv export-certificate $(basename $@) $@
 
+view-9a: 9a.cer
+	certutil $< | iconv -f sjis
+
 certs: 9a.cer 9c.cer 9d.cer 9e.cer
 
-import-certs: 9a.cer
-	certutil -importcert 9a.cer | iconv -f sjis
