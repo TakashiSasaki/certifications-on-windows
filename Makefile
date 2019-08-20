@@ -74,7 +74,7 @@ machine/trustedpeople.txt:
 machine/root.txt:
 	certutil.exe -store Root | iconv -f sjis | tee $@
 
-usage: usage/ usage/certutil.txt
+usage: usage/ usage/certutil.txt usage/getkey.txt
 
 usage/:
 	-@mkdir usage
