@@ -3,11 +3,11 @@
 .DEFAULT_GOAL=all
 SMARTCARD_DIR=smartcard/
 USER_DIR=user/
-MACHINE_DIR=machine/
-USAGE_DIR=usage/
 YKMAN=/drives/c/Program\ Files/Yubico/YubiKey\ Manager/ykman.exe
 
-all: smartcard user machine usage
+all: smartcard user
+	$(MAKE) -C usage
+	$(MAKE) -C machine
 
 help:
 	$(info make help)
@@ -56,24 +56,4 @@ $(USER_DIR)trustedpeople.txt:
 
 $(USER_DIR)my.txt:
 	certutil.exe -user -store My | iconv -f sjis | tee $@
-
-machine: $(MACHINE_DIR) $(MACHINE_DIR)my.txt
-
-$(MACHINE_DIR):
-	-@mkdir $@
-
-$(MACHINE_DIR)enumstore.txt:
-	certutil.exe -enumstore | iconv -f sjis | tee $@
-
-$(MACHINE_DIR)my.txt:
-	certutil.exe -store My | iconv -f sjis | tee $@
-
-$(MACHINE_DIR)recovery.txt:
-	certutil.exe -store Recovery | iconv -f sjis | tee $@
-
-$(MACHINE_DIR)trustedpeople.txt:
-	certutil.exe -store TrustedPeople | iconv -f sjis | tee $@
-
-$(MACHINE_DIR)root.txt:
-	certutil.exe -store Root | iconv -f sjis | tee $@
 
