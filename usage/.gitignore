@@ -1,3 +1,7 @@
 certutil.txt
+dump.txt
+dumppfx.txt
+exportpfx.txt
 getcert.txt
 getkey.txt
+store.txt
