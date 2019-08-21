@@ -7,6 +7,7 @@ all: \
 %.crt: %.certhash
 	CertUtil.exe -silent -privatekey -split -getcert $(basename $<) | iconv -f cp932
 
+# So called 'CertHash' in CertUtil.exe is identical to OpenSSL SHA1 fingerprint
 %.fingerprint: %.crt
 	openssl x509 -fingerprint -inform DER -in $< -noout >$@
 
