@@ -1,15 +1,32 @@
 #!/bin/make -f
+SHELL=/bin/bash
 .ONESHELL:
-.PHONY: all
+.PHONY: all mkdir-store
 
-all: 
+all: enumstore.txt
+	$(MAKE) -C LocalMachine
+	$(MAKE) -C CurrentService 
+	$(MAKE) -C Services
+	$(MAKE) -C Users
+	$(MAKE) -C CurrentUserGroupPolicy
+	$(MAKE) -C LocalMachineGroupPolicy
+	$(MAKE) -C LocalMachineEnterprise
 	$(MAKE) -C usage
-	$(MAKE) -C machine
 	$(MAKE) -C smartcard
-	$(MAKE) -C user
 
 help:
 	$(info make help)
 	$(info make test)
 
+enumstore.txt:
+	certutil.exe -enumstore | iconv -f cp932 | tee $@
+
+mkdir-store:
+	mkdir -p LocalMachine
+	mkdir -p CurrentService
+	mkdir -p Services
+	mkdir -p Users
+	mkdir -p CurrentUserGroupPolicy
+	mkdir -p LocalMachineGroupPolicy
+	mkdir -p LocalMachineEnterprise
 
