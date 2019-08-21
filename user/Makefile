@@ -1,20 +1,28 @@
-.PHONY: user
+.PHONY: user clean
 .ONESHELL:
-USER_DIR=./
+SHELL=/bin/bash
 
-user: $(USER_DIR) \
-	$(addsuffix $(USER_DIR), $(addsuffix, .txt, my enumstore trustedpeople))
+user: enumstore.txt \
+	My/ Root/ Trust/ TrustedPeople/ CA/ TrustedPublisher/ SmartCardRoot/
 
-$(USER_DIR):
-	-@mkdir $@
+enumstore.txt:
+	certutil.exe -enumstore -user | iconv -f cp932 | tee $@
 
-$(USER_DIR)enumstore.txt:
-	certutil.exe -enumstore -user | iconv -f sjis | tee $@
+%.txt:
+	certutil.exe -user -store $(basename $@) | iconv -f cp932 | tee $@
 
-$(USER_DIR)trustedpeople.txt:
-	certutil.exe -user -store TrustedPeople | iconv -f sjis | tee $@
+%.certhash: %.txt
+	cat $< | sed -r -n -e 's/^Cert.+\(sha1\): ([0-9a-f]+).*/\1/p' | tee $@
 
-$(USER_DIR)my.txt:
-	certutil.exe -user -store My | iconv -f sjis | tee $@
+%/:%.certhash
+	mkdir -p $(basename $<)
+	exec 3< $<
+	while read -u 3 line
+	do
+		echo $${line} > $@$${line}.certhash
+	done
+
+clean:
+	git clean -fdx
 
 
