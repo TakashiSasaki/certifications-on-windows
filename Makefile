@@ -3,14 +3,7 @@ SHELL=/bin/bash
 .ONESHELL:
 .PHONY: all mkdir-store
 
-all: enumstore.txt
-	$(MAKE) -C LocalMachine
-	$(MAKE) -C CurrentService 
-	$(MAKE) -C Services
-	$(MAKE) -C Users
-	$(MAKE) -C CurrentUserGroupPolicy
-	$(MAKE) -C LocalMachineGroupPolicy
-	$(MAKE) -C LocalMachineEnterprise
+all: 
 	$(MAKE) -C usage
 	$(MAKE) -C smartcard
 

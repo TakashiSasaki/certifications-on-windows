@@ -1,0 +1,57 @@
+.DEFAULT_GOAL=all
+.ONESHELL:
+
+all:: enumstore.cp932
+
+CERTIFICATION_STORE_LOCATIONS=CurrentService CurrentUserGroupPolicy LocalMachine LocalMachineEnterprise LocalMachineGroupPolicy Services Users
+
+CERTIFICATION_STORE_NAMES=My Root Trust TrustedPeople CA TrustedPublisher SmartCardRoot
+
+all::
+	for x in $(CERTIFICATION_STORE_LOCATIONS)
+	do
+		$(MAKE) -C $${x}
+	done
+
+mkdir-store:
+	mkdir -p CurrentService
+	for x in $(CERTIFICATION_STORE_LOCATIONS)
+	do
+		mkdir -p $${x}
+	done
+
+enumstore.cp932:
+	certutil.exe -enumstore >$@
+
+%.utf8:%.cp932
+	iconv -f cp932 -t utf8 <$< >$@
+
+
+.PHONY: user clean
+.ONESHELL:
+SHELL=/bin/bash
+
+user: enumstore.txt \
+	My/ Root/ Trust/ TrustedPeople/ CA/ TrustedPublisher/ SmartCardRoot/
+
+enumstore.txt:
+	certutil.exe -enumstore -user | iconv -f cp932 | tee $@
+
+%.txt:
+	certutil.exe -user -store $(basename $@) | iconv -f cp932 | tee $@
+
+%.certhash: %.txt
+	cat $< | sed -r -n -e 's/^Cert.+\(sha1\): ([0-9a-f]+).*/\1/p' | tee $@
+
+%/:%.certhash
+	mkdir -p $(basename $<)
+	exec 3< $<
+	while read -u 3 line
+	do
+		echo $${line} > $@$${line}.certhash
+	done
+
+clean:
+	git clean -fdx
+
+
